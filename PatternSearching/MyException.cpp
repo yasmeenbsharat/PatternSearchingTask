@@ -1,3 +1,5 @@
+#include "pch.h"
+
 #include "MyException.h"
 
 MyException::MyException(std::string error) : m_error{

@@ -4,6 +4,11 @@
 
 #include <string>
 
+
+/**
+* @brief:In  this class, we can have the exception return a description of the problem that occurred.
+*/
+
 class MyException : public std::exception {
 
       public: MyException(std::string error);

@@ -1,3 +1,6 @@
+#include "pch.h"
+
+
 #include"PatternSearching.h"
 
 #include "MyException.h"
@@ -119,6 +122,11 @@ void PatternSearching::CollectDollar(std::unordered_map < char, TrieNode* > chil
     }
 }
 
+/**
+ * @brief :this function use to delete a suffix from the trie tree
+ * @param node
+ */
+
 void PatternSearching::DeleteSuffix(TrieNode* node) {
     for (auto child : node->m_children) {
 
@@ -133,10 +141,9 @@ void PatternSearching::DeleteSuffix(TrieNode* node) {
     }
 
 }
-//Free the dynamically allocated memory
+
 /**
- * @brief : this function use to find and print all the occurrences of pattern in the text
- * @param string: pattern
+ * @brief : Destructor to Free the dynamically allocated memory 
  */
 PatternSearching::~PatternSearching() {
     if (!(m_root->m_children.empty())) {
