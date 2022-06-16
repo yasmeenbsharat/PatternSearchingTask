@@ -1,6 +1,5 @@
 #include "pch.h"
 
-
 #include"PatternSearching.h"
 
 #include "MyException.h"
@@ -12,7 +11,7 @@
 */
 PatternSearching::PatternSearching() {
 
-    m_root = new TrieNode();
+    m_root = new TrieNode('\0');
 
 }
 
@@ -33,7 +32,7 @@ void PatternSearching::Search(const std::string text,
 
         else {
             std::string input = text;
-            input += '$';
+            // input += '$';
             BulidSuffixTree(input);
             std::vector < int > result;
             bool r = true;
@@ -50,7 +49,7 @@ void PatternSearching::Search(const std::string text,
 
             }
             if (r) {
-                CollectDollar(current->m_children, result);
+                CollectResult(current, result);
                 std::cout << pattern << " is found at index ";
                 for (size_t i = 0; i < result.size(); i++) {
                     std::cout << "," << result[i];
@@ -91,14 +90,14 @@ void PatternSearching::BulidSuffixTree(std::string text) {
  */
 void PatternSearching::Insert(std::string word, int index) {
     TrieNode* current = m_root;
-    for (int i = 0; i < word.length(); i++) {
+    for (int i = 0; i <= word.length(); i++) {
         char key = word[i];
-        if (current->m_children.find(key) == current->m_children.end()) {
-            if (key == '$') {
-                current->m_children[key] = new TrieNode(index);
+        if (current->m_children[key] == NULL) {
+            if (key == '\0') {
+                current->m_children[key] = new TrieNode('\0', index);
             }
             else {
-                current->m_children[key] = new TrieNode();
+                current->m_children[key] = new TrieNode(key);
 
             }
         }
@@ -106,18 +105,20 @@ void PatternSearching::Insert(std::string word, int index) {
     }
 }
 /**
- * @brief : Collect all the indexes where the pattern occur from '$' node using DFS
- * @param children
+ * @brief : Collect all the indexes where the pattern occur
+ * @param current
  * @param result :vector <int >to store all the indexes where the pattern occur
+ */
+void PatternSearching::CollectResult(TrieNode* current, std::vector < int >& result) {
 
-*/
-void PatternSearching::CollectDollar(std::unordered_map < char, TrieNode* > children, std::vector < int >& result) {
-    for (auto child : children) {
-        if (child.first == '$') {
-            result.push_back(child.second->m_startIndex);
-        }
-        else {
-            CollectDollar(child.second->m_children, result);
+    for (int i = 0; i < MAX_CHAR; i++) {
+        if (current->m_children[i] != NULL) {
+            if (current->m_children[i]->m_key == '\0') {
+                result.push_back(current->m_children[i]->m_startIndex);
+            }
+            else {
+                CollectResult(current->m_children[i], result);
+            }
         }
     }
 }
@@ -128,28 +129,33 @@ void PatternSearching::CollectDollar(std::unordered_map < char, TrieNode* > chil
  */
 
 void PatternSearching::DeleteSuffix(TrieNode* node) {
-    for (auto child : node->m_children) {
 
-        if (child.first == '$') {
-            delete child.second;
-        }
-        else {
-            DeleteSuffix(child.second);
-            delete child.second;
+    for (int i = 0; i < MAX_CHAR; i++) {
+        if (node->m_children[i] != NULL) {
+            if (node->m_children[i]->m_key == '\0') {
+                delete node->m_children[i];
+            }
+            else {
+                DeleteSuffix(node->m_children[i]);
+                delete node->m_children[i];
+            }
         }
 
     }
-
 }
 
 /**
- * @brief : Destructor to Free the dynamically allocated memory 
+ * @brief : Destructor to Free the dynamically allocated memory
  */
+
 PatternSearching::~PatternSearching() {
-    if (!(m_root->m_children.empty())) {
-        for (auto child : m_root->m_children) {
-            DeleteSuffix(child.second);
+    if (m_root != NULL) {
+        for (int i = 0; i < MAX_CHAR; i++) {
+            if (m_root->m_children[i] != NULL) {
+                DeleteSuffix(m_root->m_children[i]);
+            }
         }
+
     }
     delete m_root;
 }

@@ -16,13 +16,13 @@ public:
     PatternSearching();
     void Search(const std::string text,
         const std::string pattern);
-    void BulidSuffixTree(std::string text);
-    void Insert(std::string word, int index);
-    void CollectDollar(std::unordered_map < char, TrieNode* > children, std::vector < int >& result);
-    void DeleteSuffix(TrieNode* node);
+
     ~PatternSearching();
 
 private:
     TrieNode* m_root;
-
+    void BulidSuffixTree(std::string text);
+    void Insert(std::string word, int index);
+    void CollectResult(TrieNode* current, std::vector < int >& result);
+    void DeleteSuffix(TrieNode* node);
 };

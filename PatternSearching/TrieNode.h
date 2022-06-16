@@ -1,20 +1,19 @@
 #include <iostream>
 
-#include <unordered_map>
-
+#define MAX_CHAR 256
 /**
- * @brief :every trie node has two main components an unordered map  to child node where the key is a character
- and the value is a pointer to another node  and the second one is an integer it stores the index
- of the suffix
+ * @brief :every trie node has three main components an array of child pointers . The second one is an integer it stores the index
+ of the suffix and the last one is a  character to store key.
 */
 
 class TrieNode {
 
 public:
-    TrieNode(int index = -1);
+    TrieNode(char key, int index = -1);
     friend class PatternSearching;
 private:
-    std::unordered_map < char, TrieNode* > m_children;
+    TrieNode* m_children[MAX_CHAR];
+    char m_key;
     int m_startIndex;
 
 };
